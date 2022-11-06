@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "799039574802",
+    "project_id": "petite-money",
+    "storage_bucket": "petite-money.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:799039574802:android:cce76f2dda8a6467fcd9cb",
+        "android_client_info": {
+          "package_name": "com.example.petite_money"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "799039574802-ko687q86c5ldsk5kla6u0ssj6b3rsjij.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1SG5qgZV0aOxGqbjT-sBQtkyu1aKyc9Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "799039574802-ko687q86c5ldsk5kla6u0ssj6b3rsjij.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

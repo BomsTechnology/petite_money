@@ -25,7 +25,7 @@ class OnboardingPage extends StatelessWidget {
                     height: 300,
                   ),
                   Text(
-                    'Vos transactions Mobile Money faciles et rapides.',
+                    'Vos transactions Quotidiennes faciles et rapides.',
                     textAlign: TextAlign.center,
                     style: GoogleFonts.ubuntu(
                       fontSize: 30,

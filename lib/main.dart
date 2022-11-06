@@ -4,6 +4,8 @@ import 'package:petite_money/pages/onboarding_page.dart';
 import 'package:petite_money/provider/theme_provider.dart';
 import 'package:petite_money/utils/my_themes.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 const dGreen = Color(0xFF00b894);
 const bgGray = Color(0xFFB7D2DB);
@@ -11,10 +13,14 @@ const dTitle = Color(0xFF37474f);
 const dGray = Color(0xff263238);
 const dYellow = Color(0xffffcc00);
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+    [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
+  );
   runApp(
     MultiProvider(
       providers: [

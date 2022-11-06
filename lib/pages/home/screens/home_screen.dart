@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:petite_money/main.dart';
 import 'package:petite_money/pages/account_page.dart';
+import 'package:petite_money/pages/amount_page.dart';
 import 'package:petite_money/pages/notification_page.dart';
 import 'package:petite_money/provider/theme_provider.dart';
 import 'package:provider/provider.dart';
@@ -118,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   '1000 XFA',
                                   style: GoogleFonts.ubuntu(
                                     color: dGray,
-                                    fontSize: 40,
+                                    fontSize: 30,
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
@@ -147,7 +148,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 width: 10,
                               ),
                               Text(
-                                'AFFICHER MON SOLDE',
+                                'MASQUER MON SOLDE',
                                 style: GoogleFonts.ubuntu(
                                   fontSize: 15,
                                   color: dGray,
@@ -164,43 +165,25 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(
                   height: 30,
                 ),
-                Center(
-                  child: SizedBox(
-                    height: 180,
-                    width: 180,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(60),
-                          ),
-                          child: Image.asset(
-                            'assets/transfert.png',
-                            width: 60,
-                            height: 60,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Text(
-                            "Transferer de l'argent",
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.ubuntu(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                Text(
+                  'Paiement',
+                  style: GoogleFonts.ubuntu(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
                   ),
+                ),
+                const SizedBox(
+                  height: 25,
+                ),
+                Row(
+                  // mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    buildCard(
+                      action: const AmountPage(type: 0),
+                      imagePath: 'assets/transfert.png',
+                      label: 'Transfert d\'argent',
+                    ),
+                  ],
                 ),
                 const SizedBox(
                   height: 30,
@@ -216,10 +199,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: 25,
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  // mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     buildCard(
-                      action: const NotificationPage(),
+                      action: const AmountPage(type: 1),
                       imagePath: 'assets/depot.png',
                       label: 'Dépôt d\'argent',
                     ),
@@ -227,7 +210,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       width: 20,
                     ),
                     buildCard(
-                      action: const NotificationPage(),
+                      action: const AmountPage(type: 2),
                       imagePath: 'assets/retrait.png',
                       label: 'Retrait d\'argent',
                     ),
