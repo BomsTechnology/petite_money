@@ -1,29 +1,36 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:petite_money/main.dart';
 import 'package:petite_money/pages/home/home_page.dart';
+import 'package:petite_money/utils/flash_message.dart';
 
 class OTPPage extends StatefulWidget {
   const OTPPage({
     super.key,
     this.creds,
-    this.iCode,
+    required this.verificationId,
     required this.phone,
   });
   final String phone;
-  final String? iCode;
+  final String verificationId;
   final Map<String, dynamic>? creds;
   @override
   State<OTPPage> createState() => _OTPPageState();
 }
 
 class _OTPPageState extends State<OTPPage> {
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseFirestore db = FirebaseFirestore.instance;
   bool _isLoading = false;
   final character1Controller = TextEditingController();
   final character2Controller = TextEditingController();
   final character3Controller = TextEditingController();
   final character4Controller = TextEditingController();
+  final character5Controller = TextEditingController();
+  final character6Controller = TextEditingController();
   String currentCode = "";
   String code = "1234";
 
@@ -88,13 +95,13 @@ class _OTPPageState extends State<OTPPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       SizedBox(
-                        height: 60,
-                        width: 60,
+                        height: 40,
+                        width: 40,
                         child: TextFormField(
                           onChanged: (value) {
                             if (value.length == 1) {
                               code =
-                                  "${character1Controller.text}${character2Controller.text}${character3Controller.text}${character4Controller.text}";
+                                  "${character1Controller.text}${character2Controller.text}${character3Controller.text}${character4Controller.text}${character5Controller.text}${character6Controller.text}";
                               FocusScope.of(context).nextFocus();
                             } else {
                               FocusScope.of(context).previousFocus();
@@ -114,13 +121,13 @@ class _OTPPageState extends State<OTPPage> {
                         ),
                       ),
                       SizedBox(
-                        height: 60,
-                        width: 60,
+                        height: 40,
+                        width: 40,
                         child: TextFormField(
                           onChanged: (value) {
                             if (value.length == 1) {
                               code =
-                                  "${character1Controller.text}${character2Controller.text}${character3Controller.text}${character4Controller.text}";
+                                  "${character1Controller.text}${character2Controller.text}${character3Controller.text}${character4Controller.text}${character5Controller.text}${character6Controller.text}";
                               FocusScope.of(context).nextFocus();
                             } else {
                               FocusScope.of(context).previousFocus();
@@ -140,13 +147,13 @@ class _OTPPageState extends State<OTPPage> {
                         ),
                       ),
                       SizedBox(
-                        height: 60,
-                        width: 60,
+                        height: 40,
+                        width: 40,
                         child: TextFormField(
                           onChanged: (value) {
                             if (value.length == 1) {
                               code =
-                                  "${character1Controller.text}${character2Controller.text}${character3Controller.text}${character4Controller.text}";
+                                  "${character1Controller.text}${character2Controller.text}${character3Controller.text}${character4Controller.text}${character5Controller.text}${character6Controller.text}";
                               FocusScope.of(context).nextFocus();
                             } else {
                               FocusScope.of(context).previousFocus();
@@ -165,20 +172,70 @@ class _OTPPageState extends State<OTPPage> {
                         ),
                       ),
                       SizedBox(
-                        height: 60,
-                        width: 60,
+                        height: 40,
+                        width: 40,
                         child: TextFormField(
                           onChanged: (value) {
                             if (value.length == 1) {
                               code =
-                                  "${character1Controller.text}${character2Controller.text}${character3Controller.text}${character4Controller.text}";
+                                  "${character1Controller.text}${character2Controller.text}${character3Controller.text}${character4Controller.text}${character5Controller.text}${character6Controller.text}";
+                              FocusScope.of(context).nextFocus();
+                            } else {
+                              FocusScope.of(context).previousFocus();
+                            }
+                          },
+                          controller: character4Controller,
+                          keyboardType: TextInputType.number,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.headline6,
+                          decoration: const InputDecoration(
+                              border: OutlineInputBorder(), hintText: "0"),
+                          inputFormatters: [
+                            LengthLimitingTextInputFormatter(1),
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 40,
+                        width: 40,
+                        child: TextFormField(
+                          onChanged: (value) {
+                            if (value.length == 1) {
+                              code =
+                                  "${character1Controller.text}${character2Controller.text}${character3Controller.text}${character4Controller.text}${character5Controller.text}${character6Controller.text}";
+                              FocusScope.of(context).nextFocus();
+                            } else {
+                              FocusScope.of(context).previousFocus();
+                            }
+                          },
+                          controller: character5Controller,
+                          keyboardType: TextInputType.number,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.headline6,
+                          decoration: const InputDecoration(
+                              border: OutlineInputBorder(), hintText: "0"),
+                          inputFormatters: [
+                            LengthLimitingTextInputFormatter(1),
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 40,
+                        width: 40,
+                        child: TextFormField(
+                          onChanged: (value) {
+                            if (value.length == 1) {
+                              code =
+                                  "${character1Controller.text}${character2Controller.text}${character3Controller.text}${character4Controller.text}${character5Controller.text}${character6Controller.text}";
                               FocusScope.of(context).nextFocus();
                               // verify();
                             } else {
                               FocusScope.of(context).previousFocus();
                             }
                           },
-                          controller: character4Controller,
+                          controller: character6Controller,
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.headline6,
@@ -211,14 +268,7 @@ class _OTPPageState extends State<OTPPage> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const HomePage(),
-                        ),
-                      );
-                    },
+                    onPressed: verify,
                     child: _isLoading
                         ? const SizedBox(
                             height: 20,
@@ -243,5 +293,50 @@ class _OTPPageState extends State<OTPPage> {
         ),
       ),
     );
+  }
+
+  verify() async {
+    setState(() {
+      _isLoading = true;
+    });
+    final credential = PhoneAuthProvider.credential(
+      verificationId: widget.verificationId,
+      smsCode: code,
+    );
+    try {
+      final UserCredential userCredential =
+          await auth.signInWithCredential(credential);
+      if (widget.creds != null) {
+        final user = userCredential.user;
+
+        await user?.updateDisplayName(widget.creds!['name']);
+        await db.collection('users').doc(user!.uid).set({
+          'name': widget.creds!['name'],
+          'phone': widget.creds!['phone'],
+          'accountType': widget.creds!['accountType'],
+          'operator': widget.creds!['operator'],
+          'withBiometric': true,
+          'balance': 0,
+          'state': 1
+        });
+      }
+
+      // ignore: use_build_context_synchronously
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const HomePage(),
+        ),
+      );
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      print(e.toString());
+      FlashMessage.showSnackBar(e.toString(), context);
+    }
+    setState(() {
+      _isLoading = false;
+    });
   }
 }

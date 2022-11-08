@@ -42,8 +42,10 @@ class _ScannerPageState extends State<ScannerPage> {
   }
 
   void readQr() async {
-    controller!.pauseCamera();
-    controller!.dispose();
+    if (result != null) {
+      controller!.pauseCamera();
+      controller!.dispose();
+    }
   }
 
   @override

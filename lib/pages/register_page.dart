@@ -1,9 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:petite_money/main.dart';
 import 'package:petite_money/pages/login_page.dart';
 import 'package:petite_money/pages/otp_page.dart';
+import 'package:petite_money/utils/flash_message.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -13,6 +16,8 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseFirestore db = FirebaseFirestore.instance;
   final formKey = GlobalKey<FormState>();
   final phoneController = TextEditingController();
   final nameController = TextEditingController();
@@ -252,16 +257,7 @@ class _RegisterPageState extends State<RegisterPage> {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const OTPPage(
-                      phone: '237658401181',
-                    ),
-                  ),
-                );
-              },
+              onPressed: register,
               child: _isLoading
                   ? const SizedBox(
                       height: 20,
@@ -315,4 +311,68 @@ class _RegisterPageState extends State<RegisterPage> {
           )
         ],
       );
+
+  register() async {
+    final isValid = formKey.currentState!.validate();
+    if (!isValid) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    db
+        .collection('users')
+        .where('phone', isEqualTo: "237${phoneController.text}")
+        .get()
+        .then((QuerySnapshot querySnapshot) async {
+      if (querySnapshot.docs.isNotEmpty) {
+        setState(() {
+          _isLoading = false;
+        });
+        FlashMessage.showSnackBar("Ce compte exite déja", context);
+      } else {
+        Map<String, dynamic> creds = {
+          'phone': "237${phoneController.text}",
+          'name': nameController.text.trim(),
+          'accountType': accountType,
+          'operator':
+              correctNumMtn.contains(phoneController.text.substring(0, 3))
+                  ? 'Mtn'
+                  : 'Orange',
+        };
+        await auth.verifyPhoneNumber(
+          phoneNumber: '+237${phoneController.text}',
+          verificationCompleted: (PhoneAuthCredential credential) {},
+          verificationFailed: (FirebaseAuthException e) {
+            print(e.message.toString());
+            FlashMessage.showSnackBar(e.message.toString(), context);
+            setState(() {
+              _isLoading = false;
+            });
+          },
+          codeSent: (String verificationId, int? resendToken) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => OTPPage(
+                  phone: '+237${phoneController.text}',
+                  verificationId: verificationId,
+                  creds: creds,
+                ),
+              ),
+            );
+            setState(() {
+              _isLoading = false;
+            });
+          },
+          codeAutoRetrievalTimeout: (String verificationId) {
+            // FlashMessage.showSnackBar(verificationId, context);
+            setState(() {
+              _isLoading = false;
+            });
+          },
+        );
+      }
+    });
+  }
 }

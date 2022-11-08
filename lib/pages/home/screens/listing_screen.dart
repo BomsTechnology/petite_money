@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:petite_money/main.dart';
@@ -12,6 +13,7 @@ class ListingScreen extends StatefulWidget {
 }
 
 class _ListingScreenState extends State<ListingScreen> {
+  final User user = FirebaseAuth.instance.currentUser!;
   @override
   Widget build(BuildContext context) {
     return Consumer<ThemeProvider>(
@@ -31,14 +33,14 @@ class _ListingScreenState extends State<ListingScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Marcelin Sigha',
+                  "${user.displayName}",
                   style: GoogleFonts.ubuntu(
                     fontWeight: FontWeight.w700,
                     color: Colors.white,
                   ),
                 ),
                 Text(
-                  '237658401181',
+                  "${user.phoneNumber}",
                   style: GoogleFonts.ubuntu(
                     fontWeight: FontWeight.w400,
                     color: Colors.white,

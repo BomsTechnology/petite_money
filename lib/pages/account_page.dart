@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:petite_money/main.dart';
@@ -14,10 +15,11 @@ class AccountPage extends StatefulWidget {
 
 class _AccountPageState extends State<AccountPage> {
   bool withBiomrtric = false;
-  bool noPin = false;
+  final User user = FirebaseAuth.instance.currentUser!;
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    var names = user.displayName.toString().split(" ");
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -50,7 +52,7 @@ class _AccountPageState extends State<AccountPage> {
                     radius: 30,
                     backgroundColor: bgGray,
                     child: Text(
-                      'MS',
+                      '${names[0][0].toUpperCase()}${names.length > 1 ? names[1][0].toUpperCase() : ""}',
                       style: GoogleFonts.ubuntu(
                         fontWeight: FontWeight.w700,
                         color: dGreen,
@@ -65,14 +67,14 @@ class _AccountPageState extends State<AccountPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Marcelin Sigha',
+                        "${user.displayName}",
                         style: GoogleFonts.ubuntu(
                           fontWeight: FontWeight.w700,
                           fontSize: 25,
                         ),
                       ),
                       Text(
-                        '237658401181',
+                        "${user.phoneNumber}",
                         style: GoogleFonts.ubuntu(
                           fontWeight: FontWeight.w400,
                           fontSize: 16,
@@ -105,6 +107,7 @@ class _AccountPageState extends State<AccountPage> {
                       overflow: TextOverflow.fade,
                       "Biométrie",
                       style: GoogleFonts.ubuntu(
+                        color: Colors.grey,
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
                       ),
@@ -149,6 +152,7 @@ class _AccountPageState extends State<AccountPage> {
               SwitchListTile(
                 title: Text(themeProvider.getIsDarkMode ? 'Sombre' : 'Clair',
                     style: GoogleFonts.ubuntu(
+                      color: Colors.grey,
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
                     )),
@@ -265,7 +269,7 @@ class _AccountPageState extends State<AccountPage> {
               ),
               InkWell(
                 onTap: () async {
-                  // if (response.statusCode == 201) {
+                  FirebaseAuth.instance.signOut();
                   Navigator.push(
                     context,
                     MaterialPageRoute(

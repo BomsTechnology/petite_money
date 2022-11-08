@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:petite_money/pages/home/home_page.dart';
 import 'package:petite_money/pages/onboarding_page.dart';
 import 'package:petite_money/provider/theme_provider.dart';
 import 'package:petite_money/utils/my_themes.dart';
@@ -56,7 +58,17 @@ class _MyAppState extends State<MyApp> {
           title: 'Petite Money',
           debugShowCheckedModeBanner: false,
           theme: MyThemes.themeData(themeProvider.getIsDarkMode, context),
-          home: const OnboardingPage(),
+          home: StreamBuilder<User?>(
+            stream: FirebaseAuth.instance.authStateChanges(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return const HomePage();
+              } else {
+                return const OnboardingPage();
+              }
+              ;
+            },
+          ),
         );
       },
     );

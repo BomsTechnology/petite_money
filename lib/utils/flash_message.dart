@@ -37,7 +37,7 @@ class FlashMessage {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Oh Snap!",
+                          "Oh Erreur!",
                           style: GoogleFonts.ubuntu(
                               color: Colors.white,
                               fontSize: 18,

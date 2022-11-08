@@ -1,8 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:petite_money/main.dart';
+import 'package:petite_money/pages/otp_page.dart';
 import 'package:petite_money/pages/register_page.dart';
+import 'package:petite_money/utils/flash_message.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -12,8 +16,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final FirebaseAuth auth = FirebaseAuth.instance;
   final formKey = GlobalKey<FormState>();
   final phoneController = TextEditingController();
+  final FirebaseFirestore db = FirebaseFirestore.instance;
   bool _isLoading = false;
   String image = "";
   final List correctNumMtn = [
@@ -166,7 +172,7 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: null,
+                  onPressed: login,
                   child: _isLoading
                       ? const SizedBox(
                           height: 20,
@@ -223,5 +229,57 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  login() async {
+    final isValid = formKey.currentState!.validate();
+    if (!isValid) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+    db
+        .collection('users')
+        .where('phone', isEqualTo: "237${phoneController.text}")
+        .get()
+        .then((QuerySnapshot querySnapshot) async {
+      if (querySnapshot.docs.isEmpty) {
+        setState(() {
+          _isLoading = false;
+        });
+        FlashMessage.showSnackBar("Vous n'avez pas de compte", context);
+      } else {
+        await auth.verifyPhoneNumber(
+          phoneNumber: '+237${phoneController.text}',
+          verificationCompleted: (PhoneAuthCredential credential) {},
+          verificationFailed: (FirebaseAuthException e) {
+            FlashMessage.showSnackBar(e.message.toString(), context);
+            setState(() {
+              _isLoading = false;
+            });
+          },
+          codeSent: (String verificationId, int? resendToken) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => OTPPage(
+                  phone: '+237${phoneController.text}',
+                  verificationId: verificationId,
+                ),
+              ),
+            );
+            setState(() {
+              _isLoading = false;
+            });
+          },
+          codeAutoRetrievalTimeout: (String verificationId) {
+            // FlashMessage.showSnackBar(verificationId, context);
+            setState(() {
+              _isLoading = false;
+            });
+          },
+        );
+      }
+    });
   }
 }

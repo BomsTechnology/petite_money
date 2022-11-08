@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:petite_money/main.dart';
@@ -15,13 +16,16 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final User user = FirebaseAuth.instance.currentUser!;
+  bool showBalance = false;
   @override
   Widget build(BuildContext context) {
     return Consumer<ThemeProvider>(
       builder: (context, themeProvider, child) {
+        var names = user.displayName.toString().split(" ");
         return Scaffold(
           backgroundColor: themeProvider.getIsDarkMode
-              ? Color(0xFF00001a)
+              ? const Color(0xFF00001a)
               : Colors.grey.shade200,
           appBar: AppBar(
             elevation: 0,
@@ -45,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   radius: 18,
                   backgroundColor: Colors.white,
                   child: Text(
-                    'MS',
+                    '${names[0][0].toUpperCase()}${names.length > 1 ? names[1][0].toUpperCase() : ""}',
                     style: GoogleFonts.ubuntu(
                       fontWeight: FontWeight.w700,
                       color: dGreen,
@@ -91,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 Container(
                   width: double.infinity,
-                  height: 200,
+                  height: 150,
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -101,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       Expanded(
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          padding: const EdgeInsets.symmetric(vertical: 10),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
@@ -115,14 +119,20 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                               const Spacer(),
                               Center(
-                                child: Text(
-                                  '1000 XFA',
-                                  style: GoogleFonts.ubuntu(
-                                    color: dGray,
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
+                                child: showBalance
+                                    ? Text(
+                                        '0 XFA',
+                                        style: GoogleFonts.ubuntu(
+                                          color: dGray,
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      )
+                                    : Container(
+                                        width: 100,
+                                        height: 10,
+                                        color: Colors.grey,
+                                      ),
                               )
                             ],
                           ),
@@ -135,20 +145,28 @@ class _HomeScreenState extends State<HomeScreen> {
                         height: 30,
                         width: double.infinity,
                         child: InkWell(
-                          onTap: null,
+                          onTap: () {
+                            setState(() {
+                              showBalance = !showBalance;
+                            });
+                          },
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Icon(
-                                Icons.remove_red_eye,
+                              Icon(
+                                showBalance
+                                    ? Icons.close_rounded
+                                    : Icons.remove_red_eye,
                                 color: dGreen,
                               ),
                               const SizedBox(
                                 width: 10,
                               ),
                               Text(
-                                'MASQUER MON SOLDE',
+                                showBalance
+                                    ? 'MASQUER MON SOLDE'
+                                    : 'AFFICHER MON SOLDE',
                                 style: GoogleFonts.ubuntu(
                                   fontSize: 15,
                                   color: dGray,
